@@ -1,4 +1,4 @@
-﻿{
+{
   "identifier": "org.yoshino.Server_Sentinel",
   "name": "Server Sentinel",
   "description": "Minecraft 服务器监控面板 - 实时查看在线人数、延迟、TPS 与状态",
