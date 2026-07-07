@@ -1,7 +1,7 @@
 {
-  "identifier": "org.yoshino.Server_Sentinel",
+  "identifier": "org.yoshino.server_sentinel",
   "name": "Server Sentinel",
-  "description": "Minecraft 服务器监控面板 - 实时查看在线人数、延迟、TPS 与状态",
+  "description": "Minecraft server monitoring panel - real-time player count, latency, TPS and status",
   "author": "hemekewayoshino",
   "version": "0.1.0",
   "frontend": {
@@ -9,4 +9,3 @@
   },
   "minimalLauncherVersion": "1.1.3"
 }
-

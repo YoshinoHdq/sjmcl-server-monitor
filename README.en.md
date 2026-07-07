@@ -2,7 +2,7 @@
 
 # Server Sentinel
 
-Minecraft server monitoring panel with real-time online players, latency, and TPS 📊
+Minecraft server monitoring panel - real-time player count, latency, TPS and status 📊
 
 **English · [简体中文](README.md)**
 
@@ -12,25 +12,24 @@ Minecraft server monitoring panel with real-time online players, latency, and TP
 
 ## 简介
 
-Server Sentinel is a SJMCL extension that monitors Minecraft server status in real-time within the launcher, including online player count, latency, and TPS.
+Server Sentinel is a SJMCL extension that monitors Minecraft server status in real-time within the launcher.
+
+Two versions available:
+- **English** (org.yoshino.server_sentinel)
+- **中文版** (org.yoshino.server_sentinel.zh)
 
 ## Features
 
-- 📊 Real-time display of online and max player counts
-- ⏱ Color-coded ping monitoring (green/yellow/orange/red)
-- 📈 Real-time TPS monitoring via custom HTTP API endpoint
-- 🎯 Support Spark API format and simple JSON format
-- 📉 TPS trend chart (sampling history tracking)
-- ➕ Support multiple servers with independent TPS data source configuration
+- 📊 Real-time online and max player count
+- ⏱ Color-coded latency monitoring (green/yellow/orange/red)
+- 📈 Real-time TPS monitoring
+- ➕ Multi-server support
 
 ## Installation
 
-1. Download org.yoshino.server_sentinel.sjmclx from Releases
+1. Download the .sjmclx file from Releases
 2. Open SJMCL → Settings → Extension Management → Import
-3. Add server addresses in the extension settings page
-4. (Optional) For TPS monitoring, select "Custom HTTP Endpoint" in server config and enter an API URL
-
-> Requires server-side plugins (e.g., Spark, custom TPS query plugin) that support HTTP API to retrieve TPS data.
+3. Add server addresses in extension settings
 
 ## Compatibility
 

@@ -18,7 +18,7 @@
 
     function motdToClean(raw) {
       if (!raw || !raw.join) return "";
-      return raw.join(" ").replace(/§[0-9a-fklmnor]/gi, "");
+      return raw.join(" ").replace(/\u00a7[0-9a-fklmnor]/gi, "");
     }
 
     function pingServer(address) {
@@ -135,21 +135,21 @@
 
       return el(VStack, { align: "stretch", spacing: 3 },
         el(HStack, { justify: "space-between", align: "center" },
-          el(Text, { fontSize: "sm", fontWeight: "bold" }, "Server Monitor"),
-          el(Badge, { colorScheme: onlineCount > 0 ? "green" : "gray", variant: "subtle" }, onlineCount + "/" + servers.length + " Online")
+          el(Text, { fontSize: "sm", fontWeight: "bold" }, "服务器监控"),
+          el(Badge, { colorScheme: onlineCount > 0 ? "green" : "gray", variant: "subtle" }, onlineCount + "/" + servers.length + " 在线")
         ),
         el(HStack, { spacing: 3 },
           el(Box, { bg: "blue.50", _dark: { bg: "blue.900" }, p: 2, borderRadius: "md", flex: 1, textAlign: "center" },
             el(Text, { fontSize: "2xl", fontWeight: "bold", color: "blue.500" }, "" + onlineCount),
-            el(Text, { fontSize: "xs", color: "gray.500" }, "Online")
+            el(Text, { fontSize: "xs", color: "gray.500" }, "在线")
           ),
           el(Box, { bg: "green.50", _dark: { bg: "green.900" }, p: 2, borderRadius: "md", flex: 1, textAlign: "center" },
             el(Text, { fontSize: "2xl", fontWeight: "bold", color: "green.500" }, "" + totalPlayers),
-            el(Text, { fontSize: "xs", color: "gray.500" }, "Players")
+            el(Text, { fontSize: "xs", color: "gray.500" }, "玩家")
           ),
           el(Box, { bg: "purple.50", _dark: { bg: "purple.900" }, p: 2, borderRadius: "md", flex: 1, textAlign: "center" },
             el(Text, { fontSize: "2xl", fontWeight: "bold", color: "purple.500" }, "" + servers.length),
-            el(Text, { fontSize: "xs", color: "gray.500" }, "Servers")
+            el(Text, { fontSize: "xs", color: "gray.500" }, "服务器")
           )
         ),
         servers.length > 0
@@ -170,8 +170,8 @@
                 );
               })
             )
-          : el(Text, { fontSize: "sm", color: "gray.500", fontStyle: "italic" }, "No servers to monitor"),
-        el(Text, { fontSize: "xs", color: "gray.500", textAlign: "center" }, "Go to settings to manage servers")
+          : el(Text, { fontSize: "sm", color: "gray.500", fontStyle: "italic" }, "暂无可监控的服务器"),
+        el(Text, { fontSize: "xs", color: "gray.500", textAlign: "center" }, "前往扩展设置管理服务器")
       );
     }
     function SettingsPage() {
@@ -194,12 +194,12 @@
       var [tabIdx, setTabIdx] = useState(0);
       var [tpsHistory, setTpsHistory] = useState(storageGet("tpsHistory", {}));
       var TPS_GUIDE = [
-        ["Prerequisites", "Your server needs an HTTP API plugin for TPS data. Spark (https://spark.lucko.me/) is recommended."],
-        ["Step 1: Install Spark", "Place Spark in your server mods/plugins folder and restart. Supports Bukkit/Spigot/Paper, Fabric, Forge, BungeeCord, and more."],
-        ["Step 2: Enable HTTP Server", "Run /spark health to verify, then /spark enablehttp to enable HTTP API (default port 25578)."],
-        ["Step 3: Configure TPS Endpoint", "在本扩展的设置页 → 「Manage」标签页，点击「Add Server」或编辑已有Servers，将 TPS 数据源选为「自定义 HTTP 端点」。URL formate.g. http://你的ServersIP:25578/api/v2/profiler，保存即可。"],
-        ["Alternatives", "e.g.果你使用其他Panel（e.g. PufferPanel、AMP、MCSManager 等），它们通常也提供 REST API。只需配置对应的 TPS API URL 即可。插件支持简单format {\"tps\": 19.8}、Spark format和纯 MSPT format。"],
-        ["Notes", "TPS API must be reachable from SJMCL. Use LAN IP for local servers, open port for public ones. Set refresh to 10-30s for smooth graphs."]
+        ["必要前提", "你的 Minecraft 服务器需要安装一个支持 HTTP API 的插件来暴露 TPS 数据。推荐使用 Spark（https://spark.lucko.me/），它自带 HTTP 服务器和 TPS API。"],
+        ["第一步: 安装 Spark", "将 Spark 插件放入服务器的 mods 或 plugins 文件夹，重启服务器。Spark 支持 Bukkit/Spigot/Paper、Fabric、Forge、BungeeCord 等几乎所有服务端类型。"],
+        ["第二步: 开启 HTTP 服务", "在服务器控制台执行 /spark health 确认 Spark 运行正常，然后执行 /spark enablehttp 开启 HTTP API。默认端口为 25578。"],
+        ["第三步: 配置 TPS 端点", "在本扩展的设置页 → 「管理」标签页，点击「添加服务器」或编辑已有服务器，将 TPS 数据源选为「自定义 HTTP 端点」。URL 格式如 http://你的服务器IP:25578/api/v2/profiler，保存即可。"],
+        ["其他方案", "如果你使用其他面板（如 PufferPanel、AMP、MCSManager 等），它们通常也提供 REST API。只需配置对应的 TPS API URL 即可。插件支持简单格式 {\"tps\": 19.8}、Spark 格式和纯 MSPT 格式。"],
+        ["注意事项", "TPS API URL 必须能被 SJMCL 所在电脑访问。如果服务器在局域网内，请使用内网 IP；如果在公网，确保端口已放行。建议将刷新间隔设为 10-30 秒以获得平滑的趋势图。"]
       ];
       var [showTpsGuide, setShowTpsGuide] = useState(false);
 
@@ -317,7 +317,7 @@
         var points = props.points || [];
         var width = props.width || 120;
         var height = props.height || 28;
-        if (points.length < 2) return el(Text, { fontSize: "xs", color: "gray.500" }, "Waiting for data...");
+        if (points.length < 2) return el(Text, { fontSize: "xs", color: "gray.500" }, "等待数据中...");
         var maxVal = 20, minVal = 0;
         var pts = points.map(function (p, i) {
           var x = (i / (points.length - 1)) * width;
@@ -338,33 +338,33 @@
       }
       var panelView = el(VStack, { spacing: 4, align: "stretch" },
         el(HStack, { justify: "space-between" },
-          el(Heading, { size: "md" }, "Server Panel"),
+          el(Heading, { size: "md" }, "服务器面板"),
           el(HStack, { spacing: 2 },
-            el(Text, { fontSize: "sm", color: "gray.500" }, "Auto: " + interval + "s"),
-            el(Button, { size: "sm", colorScheme: "blue", onClick: fetchAll }, "Refresh")
+            el(Text, { fontSize: "sm", color: "gray.500" }, "自动: " + interval + "s"),
+            el(Button, { size: "sm", colorScheme: "blue", onClick: fetchAll }, "刷新")
           )
         ),
         el(HStack, { spacing: 4 },
           el(Box, { bg: "blue.50", _dark: { bg: "blue.900" }, p: 4, borderRadius: "lg", flex: 1, textAlign: "center" },
             el(Text, { fontSize: "3xl", fontWeight: "bold", color: "blue.500" }, "" + onlineCount),
-            el(Text, { fontSize: "sm", color: "gray.500" }, "Online")
+            el(Text, { fontSize: "sm", color: "gray.500" }, "在线")
           ),
           el(Box, { bg: "green.50", _dark: { bg: "green.900" }, p: 4, borderRadius: "lg", flex: 1, textAlign: "center" },
             el(Text, { fontSize: "3xl", fontWeight: "bold", color: "green.500" }, "" + totalPlayers),
-            el(Text, { fontSize: "sm", color: "gray.500" }, "Players")
+            el(Text, { fontSize: "sm", color: "gray.500" }, "玩家")
           ),
           el(Box, { bg: "orange.50", _dark: { bg: "orange.900" }, p: 4, borderRadius: "lg", flex: 1, textAlign: "center" },
             el(Text, { fontSize: "3xl", fontWeight: "bold", color: "orange.500" }, "" + totalMax),
-            el(Text, { fontSize: "sm", color: "gray.500" }, "Max")
+            el(Text, { fontSize: "sm", color: "gray.500" }, "最大")
           ),
           el(Box, { bg: "purple.50", _dark: { bg: "purple.900" }, p: 4, borderRadius: "lg", flex: 1, textAlign: "center" },
             el(Text, { fontSize: "3xl", fontWeight: "bold", color: "purple.500" }, "" + servers.length),
-            el(Text, { fontSize: "sm", color: "gray.500" }, "Monitor")
+            el(Text, { fontSize: "sm", color: "gray.500" }, "监控")
           )
         ),
         servers.length === 0
           ? el(Alert, { status: "info", borderRadius: "md" },
-              el(AlertIcon, null), el(AlertTitle, null, "No Servers"), el(AlertDescription, null, "Switch to Manage tab to add servers.")
+              el(AlertIcon, null), el(AlertTitle, null, "暂无服务器"), el(AlertDescription, null, "请切换到「管理」标签页添加服务器。")
             )
           : el(VStack, { spacing: 3 },
               servers.map(function (s) {
@@ -379,12 +379,12 @@
                   !d
                     ? el(Box, null, el(HStack, { justify: "space-between" },
                         el(Text, { fontSize: "sm", fontWeight: "bold" }, s.label || s.address),
-                        el(Badge, { colorScheme: "gray", variant: "solid", fontSize: "xs" }, "Waiting")
+                        el(Badge, { colorScheme: "gray", variant: "solid", fontSize: "xs" }, "等待中")
                       ), el(Text, { fontSize: "xs", color: "gray.500", mt: 1 }, s.address))
                     : !d.online
                       ? el(Box, null, el(HStack, { justify: "space-between" },
                           el(Text, { fontSize: "sm", fontWeight: "bold" }, s.label || s.address),
-                          el(Badge, { colorScheme: "red", variant: "solid", fontSize: "xs" }, "Offline")
+                          el(Badge, { colorScheme: "red", variant: "solid", fontSize: "xs" }, "离线")
                         ), el(Text, { fontSize: "xs", color: "gray.500", mt: 1 }, s.address))
                       : el(VStack, { spacing: 2, align: "stretch" },
                           el(HStack, { justify: "space-between" },
@@ -394,18 +394,18 @@
                                 : el(Text, { fontSize: "sm", fontWeight: "bold" }, s.label || s.address),
                               el(Text, { fontSize: "xs", color: "gray.500" }, s.address + (s.port !== 25565 ? ":" + s.port : ""))
                             ),
-                            el(Badge, { colorScheme: "green", variant: "solid", fontSize: "xs" }, "Online")
+                            el(Badge, { colorScheme: "green", variant: "solid", fontSize: "xs" }, "在线")
                           ),
                           el(HStack, { spacing: 4, fontSize: "sm", align: "center" },
-                            el(Text, null, "Players: " + d.players.online + "/" + d.players.max),
-                            el(Button, { size: "xs", variant: "ghost", colorScheme: "blue", onClick: function (e) { e.stopPropagation(); refreshServer(s); }, title: "Refresh This Server" }, "↻"),
+                            el(Text, null, "玩家: " + d.players.online + "/" + d.players.max),
+                            el(Button, { size: "xs", variant: "ghost", colorScheme: "blue", onClick: function (e) { e.stopPropagation(); refreshServer(s); }, title: "刷新此服务器" }, "↻"),
                             d.latency != null
-                              ? el(Tooltip, { label: "Ping: " + d.latency + "ms" },
+                              ? el(Tooltip, { label: "延迟: " + d.latency + "ms" },
                                   el(Text, { color: pingColor(d.latency) + ".500", fontWeight: "bold", fontSize: "sm" },
-                                    "Ping: " + d.latency + "ms"
+                                    "延迟: " + d.latency + "ms"
                                   )
                                 )
-                              : el(Text, { fontSize: "xs", color: "gray.500", fontStyle: "italic" }, "Ping: N/A"),
+                              : el(Text, { fontSize: "xs", color: "gray.500", fontStyle: "italic" }, "延迟: N/A"),
                             td && td.tps !== null
                               ? el(Tooltip, { label: "MSPT: " + (td.mspt !== null ? td.mspt.toFixed(1) : "N/A") + "ms" },
                                   el(Text, { color: tpsColor(td.tps) + ".500", fontWeight: "bold" },
@@ -413,7 +413,7 @@
                                   )
                                 )
                               : s.tpsSource === "custom" && s.tpsEndpoint
-                                ? el(Text, { fontSize: "xs", color: "gray.500", fontStyle: "italic" }, "Waiting for TPS...")
+                                ? el(Text, { fontSize: "xs", color: "gray.500", fontStyle: "italic" }, "等待TPS...")
                                 : null,
                             d.version ? el(Text, { noOfLines: 1, color: "gray.500" }, d.version.name) : null
                           ),
@@ -429,46 +429,46 @@
       );
       var settingsView = el(VStack, { spacing: 4, align: "stretch" },
         el(HStack, { justify: "space-between" },
-          el(Heading, { size: "md" }, "Server Management"),
-          el(Button, { size: "sm", variant: "outline", colorScheme: "blue", onClick: function () { setShowTpsGuide(true); } }, "TPS Setup Guide")
+          el(Heading, { size: "md" }, "服务器管理"),
+          el(Button, { size: "sm", variant: "outline", colorScheme: "blue", onClick: function () { setShowTpsGuide(true); } }, "TPS 设置教程")
         ),
         el(Box, { p: 4, borderWidth: 1, borderRadius: "md" },
-          el(Text, { fontWeight: "bold", mb: 2 }, "Add Server"),
+          el(Text, { fontWeight: "bold", mb: 2 }, "添加服务器"),
           el(VStack, { spacing: 2 },
-            el(Input, { placeholder: "Server Address (e.g., mc.hypixel.net)", value: newAddr, onChange: function (e) { setNewAddr(e.target.value); } }),
+            el(Input, { placeholder: "服务器地址 (如 mc.hypixel.net)", value: newAddr, onChange: function (e) { setNewAddr(e.target.value); } }),
             el(HStack, { spacing: 2 },
               el(Input, { placeholder: "显示名称（可选）", value: newLabel, onChange: function (e) { setNewLabel(e.target.value); }, flex: 1 }),
-              el(Input, { placeholder: "Port", value: newPort, onChange: function (e) { setNewPort(e.target.value); }, w: "100px", type: "number" })
+              el(Input, { placeholder: "端口", value: newPort, onChange: function (e) { setNewPort(e.target.value); }, w: "100px", type: "number" })
             ),
             el(HStack, { spacing: 2, align: "center" },
               el(Select, { value: newTpsSource, onChange: function (e) { setNewTpsSource(e.target.value); }, flex: 1 },
-                el("option", { value: "none" }, "TPS: Disabled"),
-                el("option", { value: "custom" }, "TPS: Custom HTTP Endpoint")
+                el("option", { value: "none" }, "TPS: 不使用"),
+                el("option", { value: "custom" }, "TPS: 自定义HTTP端点")
               ),
               newTpsSource === "custom"
                 ? el(Input, {
-                    placeholder: "TPS API URL (e.g., http://Servers:25566/tps)",
+                    placeholder: "TPS API URL (如 http://服务器:25566/tps)",
                     value: newTpsEndpoint,
                     onChange: function (e) { setNewTpsEndpoint(e.target.value); },
                     flex: 2
                   })
                 : null
             ),
-            el(Button, { colorScheme: "blue", onClick: addServer, isDisabled: !newAddr.trim() }, "Add")
+            el(Button, { colorScheme: "blue", onClick: addServer, isDisabled: !newAddr.trim() }, "添加")
           )
         ),
         el(Box, { p: 4, borderWidth: 1, borderRadius: "md" },
-          el(Text, { fontWeight: "bold", mb: 2 }, "Auto Refresh Interval"),
+          el(Text, { fontWeight: "bold", mb: 2 }, "自动刷新间隔"),
           el(Select, { value: interval, onChange: function (e) { refreshInterval[1](parseInt(e.target.value)); storageSet("interval", parseInt(e.target.value)); } },
-            el("option", { value: 10 }, "10s"), el("option", { value: 30 }, "30s"),
-            el("option", { value: 60 }, "1m"), el("option", { value: 120 }, "2m"),
-            el("option", { value: 300 }, "5m"), el("option", { value: 0 }, "Manual Only")
+            el("option", { value: 10 }, "10 秒"), el("option", { value: 30 }, "30 秒"),
+            el("option", { value: 60 }, "1 分钟"), el("option", { value: 120 }, "2 分钟"),
+            el("option", { value: 300 }, "5 分钟"), el("option", { value: 0 }, "仅手动刷新")
           )
         ),
         el(Box, { p: 4, borderWidth: 1, borderRadius: "md" },
-          el(Text, { fontWeight: "bold", mb: 2 }, "Monitored Servers (" + servers.length + ")"),
+          el(Text, { fontWeight: "bold", mb: 2 }, "监控的服务器 (" + servers.length + ")"),
           servers.length === 0
-            ? el(Text, { fontSize: "sm", color: "gray.500", fontStyle: "italic" }, "No servers. Add one above.")
+            ? el(Text, { fontSize: "sm", color: "gray.500", fontStyle: "italic" }, "暂无服务器，请在上面添加。")
             : el(VStack, { spacing: 3 },
                 servers.map(function (s) {
                   var d = statusDataVal[s.address];
@@ -484,7 +484,7 @@
                       ),
                       el(HStack, { spacing: 2 },
                         d && d.online ? el(Text, { fontSize: "xs", color: "green.500" }, d.players.online + "/" + d.players.max) : null,
-                        el(Button, { size: "xs", colorScheme: "red", variant: "ghost", onClick: function (e) { e.stopPropagation(); removeServer(s.address); } }, "Delete")
+                        el(Button, { size: "xs", colorScheme: "red", variant: "ghost", onClick: function (e) { e.stopPropagation(); removeServer(s.address); } }, "删除")
                       )
                     ),
                     el(HStack, { spacing: 2, align: "center" },
@@ -494,8 +494,8 @@
                         onChange: function (e) { updateServer(s.address, { tpsSource: e.target.value }); },
                         flex: 1
                       },
-                        el("option", { value: "none" }, "TPS: Disabled"),
-                        el("option", { value: "custom" }, "TPS: Custom HTTP Endpoint")
+                        el("option", { value: "none" }, "TPS: 不使用"),
+                        el("option", { value: "custom" }, "TPS: 自定义HTTP端点")
                       ),
                       s.tpsSource === "custom"
                         ? el(Input, {
@@ -550,19 +550,19 @@
                     : null,
                   el(Divider, null),
                   el(HStack, { spacing: 4, wrap: "wrap" },
-                    el(Box, null, el(Text, { fontSize: "xs", color: "gray.500" }, "Status"), el(Badge, { colorScheme: "green" }, "Online")),
-                    el(Box, null, el(Text, { fontSize: "xs", color: "gray.500" }, "Players"), el(Text, { fontWeight: "bold" }, d.players.online + " / " + d.players.max)),
+                    el(Box, null, el(Text, { fontSize: "xs", color: "gray.500" }, "状态"), el(Badge, { colorScheme: "green" }, "在线")),
+                    el(Box, null, el(Text, { fontSize: "xs", color: "gray.500" }, "玩家"), el(Text, { fontWeight: "bold" }, d.players.online + " / " + d.players.max)),
                     d.latency != null
                       ? el(Box, null,
-                          el(Text, { fontSize: "xs", color: "gray.500" }, "Ping"),
+                          el(Text, { fontSize: "xs", color: "gray.500" }, "延迟"),
                           el(Text, { fontWeight: "bold", color: pingColor(d.latency) + ".500" }, d.latency + "ms")
                         )
                       : null,
-                    d.version ? el(Box, null, el(Text, { fontSize: "xs", color: "gray.500" }, "Version"), el(Text, { fontSize: "sm" }, d.version.name)) : null
+                    d.version ? el(Box, null, el(Text, { fontSize: "xs", color: "gray.500" }, "版本"), el(Text, { fontSize: "sm" }, d.version.name)) : null
                   ),
                   td && (td.tps !== null || td.mspt !== null)
                     ? el(Box, { p: 3, borderWidth: 1, borderRadius: "md", bg: "blackAlpha.50", _dark: { bg: "whiteAlpha.50" } },
-                        el(Text, { fontWeight: "bold", fontSize: "sm", mb: 2 }, "Server Performance"),
+                        el(Text, { fontWeight: "bold", fontSize: "sm", mb: 2 }, "服务器性能"),
                         el(HStack, { spacing: 6 },
                           el(Box, null,
                             el(Text, { fontSize: "xs", color: "gray.500" }, "TPS"),
@@ -576,11 +576,11 @@
                             : null,
                           td.tps !== null
                             ? el(Box, null,
-                                el(Text, { fontSize: "xs", color: "gray.500" }, "Status"),
+                                el(Text, { fontSize: "xs", color: "gray.500" }, "状态"),
                                 el(Badge, {
                                   colorScheme: td.tps >= 19.0 ? "green" : td.tps >= 15.0 ? "yellow" : "red",
                                   fontSize: "sm", p: 1
-                                }, td.tps >= 19.0 ? "Smooth" : td.tps >= 15.0 ? "Lagging" : "Severe Lag")
+                                }, td.tps >= 19.0 ? "流畅" : td.tps >= 15.0 ? "卡顿" : "严重滞后")
                               )
                             : null
                         ),
@@ -597,7 +597,7 @@
                       : null,
                   d.players && d.players.list && d.players.list.length > 0
                     ? el(Box, null,
-                        el(Text, { fontSize: "xs", color: "gray.500", mb: 1 }, "Online Players (" + d.players.list.length + ")"),
+                        el(Text, { fontSize: "xs", color: "gray.500", mb: 1 }, "在线玩家 (" + d.players.list.length + ")"),
                         el(Flex, { wrap: "wrap", gap: 1 },
                           d.players.list.map(function (p) {
                             return el(Tag, { key: p.name, size: "sm", colorScheme: "blue", variant: "subtle", m: 0.5 },
@@ -609,10 +609,10 @@
                     : null
                 )
               : el(Alert, { status: "warning", borderRadius: "md" },
-                  el(AlertIcon, null), el(AlertTitle, null, "Server Offline"),
-                  el(AlertDescription, null, d && d.debug ? d.debug.ping : "Server Not Responding")
+                  el(AlertIcon, null), el(AlertTitle, null, "服务器离线"),
+                  el(AlertDescription, null, d && d.debug ? d.debug.ping : "服务器未响应")
                 ),
-            el(Button, { mt: 4, w: "100%", variant: "ghost", onClick: function () { setDetailModal(null); } }, "Close")
+            el(Button, { mt: 4, w: "100%", variant: "ghost", onClick: function () { setDetailModal(null); } }, "关闭")
           )
         );
       }
@@ -630,7 +630,7 @@
             p: 6, onClick: function (e) { e.stopPropagation(); }
           },
             el(HStack, { justify: "space-between", mb: 4 },
-              el(Heading, { size: "md" }, "TPS Monitor Setup Guide"),
+              el(Heading, { size: "md" }, "TPS 监控设置指南"),
               el(CloseButton, { onClick: function () { setShowTpsGuide(false); } })
             ),
             el(VStack, { spacing: 4, align: "stretch" },
@@ -645,10 +645,10 @@
               }),
               el(Alert, { status: "info", borderRadius: "md", fontSize: "sm" },
                 el(AlertIcon, null),
-                "Tip: After changing config, wait for auto-refresh or click Refresh to see data."
+                "提示: 修改 TPS 配置后，请等待下一次自动刷新（或点击「刷新」按钮）即可看到 TPS 数据。"
               )
             ),
-            el(Button, { mt: 4, w: "100%", variant: "ghost", colorScheme: "blue", onClick: function () { setShowTpsGuide(false); } }, "Got it")
+            el(Button, { mt: 4, w: "100%", variant: "ghost", colorScheme: "blue", onClick: function () { setShowTpsGuide(false); } }, "知道了")
           )
         );
       }
@@ -657,11 +657,11 @@
         el(Button, {
           size: "sm", variant: tabIdx === 0 ? "solid" : "ghost", colorScheme: "blue",
           onClick: function () { setTabIdx(0); }, mr: 2
-        }, "Panel"),
+        }, "面板"),
         el(Button, {
           size: "sm", variant: tabIdx === 1 ? "solid" : "ghost", colorScheme: "blue",
           onClick: function () { setTabIdx(1); }
-        }, "Manage")
+        }, "管理")
       );
 
       return el(Box, { p: 2 },
@@ -675,7 +675,7 @@
 
     return {
       homeWidget: {
-        title: "Server Monitor",
+        title: "服务器监控",
         defaultWidth: 380,
         minWidth: 300,
         Component: HomeWidget
