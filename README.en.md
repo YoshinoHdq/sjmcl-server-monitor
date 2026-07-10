@@ -38,3 +38,8 @@ Two versions available:
 ## License
 
 MIT
+
+
+---
+
+*This plugin was developed with the assistance of AI coding tools.*
