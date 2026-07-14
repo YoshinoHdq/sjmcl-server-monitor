@@ -43,3 +43,7 @@ MIT
 ---
 
 *This plugin was developed with the assistance of AI coding tools.*
+## Related Projects & Documentation
+
+- [SJMCL Extension Documentation](https://mc.sjtu.cn/sjmcl/dev/extension/)
+- [awesome-SJMCL-extensions](https://github.com/SJMC-Dev/awesome-SJMCL-extensions)
